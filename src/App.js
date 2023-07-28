@@ -1,10 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes, {arrayOf, string, shape} from 'prop-types';
 import './App.css';
 import pokemons from './pokemon.json';
 
 const PokemonRow = ({pokemon}) => {
-  console.log(pokemon);
   return (
     <tr>
       <td>{pokemon?.name?.english}</td>
@@ -23,6 +22,12 @@ PokemonRow.propTypes = {
 };
 
 const App = () => {
+  const [search, setSearch] = useState('');
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <div style={{
       margin: 'auto',
@@ -30,6 +35,7 @@ const App = () => {
       paddingTop: '1rem',
     }}>
       <h1 className="title">Pokemon search</h1>
+      <input type='text' value={search} onChange={handleChange}/>
       <table width="100%">
         <thead>
           <tr>
@@ -39,13 +45,19 @@ const App = () => {
         </thead>
         <tbody>
           {
-            pokemons.slice(0, 20).map((pokemon) => (
-              <PokemonRow
-                key={pokemon.id}
-                pokemon={pokemon}
-              />
-            ),
-            )}
+            pokemons
+                .filter((pokemon) => (
+                  pokemon.name.english.toLowerCase()
+                      .includes(search.toLowerCase())),
+                )
+                .slice(0, 20)
+                .map((pokemon) => (
+                  <PokemonRow
+                    key={pokemon.id}
+                    pokemon={pokemon}
+                  />
+                ),
+                )}
         </tbody>
       </table>
     </div>
